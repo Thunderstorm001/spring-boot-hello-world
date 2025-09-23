@@ -24,9 +24,15 @@ pipeline{
         }
 
         stage('Run App') {
-            steps {
-                sh 'nohup java -jar target/spring-boot-2-hello-world-1.0.2-SNAPSHOT.jar --server.port=9090 > app.log 2>&1 &'
-            }
-        }
+    steps {
+        sh '''
+        # Kill existing process on port 9090
+        fuser -k 9090/tcp || true
+
+        # Start new instance
+        nohup java -jar target/spring-boot-2-hello-world-1.0.2-SNAPSHOT.jar --server.port=9090 > app.log 2>&1 &
+        '''
     }
+    }
+  }
 }
